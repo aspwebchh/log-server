@@ -1,0 +1,5 @@
+log_server/Debug/
+log_server/x64/
+*.ipch
+*.db
+*.opendb
