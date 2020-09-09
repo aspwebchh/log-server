@@ -26,5 +26,8 @@
     <ClInclude Include="commons.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="mysqlHelper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

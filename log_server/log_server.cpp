@@ -3,14 +3,11 @@
 #include <windows.h>
 #include <sstream>
 #include "commons.h"
-
 #include "document.h"
 #include "writer.h"
 #include "stringbuffer.h"
-
 #include "winsock.h"
 #include "mysql.h"
-
 #include <mysql_connection.h>
 #include <mysql_driver.h>
 #include <cppconn/driver.h>
@@ -18,12 +15,13 @@
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
 #include <cppconn/prepared_statement.h>
-
 #include <string>
+#include "mysqlHelper.h"
 
 using namespace httplib;
 using namespace std;
 using namespace rapidjson;
+
 
 std::string jsonResult(const int & code, const std::string & msg) {
     StringBuffer buffer;
@@ -35,31 +33,6 @@ std::string jsonResult(const int & code, const std::string & msg) {
     writer.String(msg.c_str());
     writer.EndObject();
     return buffer.GetString();
-}
-
-
-void save2MySql(const int& type, const std::string&  content) {
-    sql::mysql::MySQL_Driver* driver;
-    sql::Connection* conn;
-    sql::Statement* state;
-    sql::ResultSet* result;
-    driver = sql::mysql::get_driver_instance();
-    conn = driver->connect("localhost", "root", "123456");
-    conn->setSchema("log");
-
-    auto statement = conn->prepareStatement("insert into log (content,add_time) values (?,now())");
-    
-    auto sb = new StringBuf(content);
-    auto is = new istream(sb);
-
-    statement->setBlob(1, is);
-    auto execResult = statement->execute();
-
-    statement->close();
-    conn->close();
-
-    delete is;
-    delete sb;
 }
 
 int main(void)
@@ -77,7 +50,10 @@ int main(void)
         }
         else {
             int type = stoi(paramType);
-            save2MySql(type, paramContent);
+            
+            mysqlHelper::saveLog(paramContent);
+     
+            cout << "保存到数据库成功" << endl;
             responseText = jsonResult(0, "操作成功");
         }
 
@@ -86,5 +62,5 @@ int main(void)
     });
 
    
-    svr.listen("localhost", 1234);
+    svr.listen("localhost", 10010);
 }

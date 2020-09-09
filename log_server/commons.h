@@ -1,6 +1,10 @@
+#pragma once
+
 #include <string>
 #include <windows.h>
 #include <sstream>
+
+
 
 std::string UTF8ToGBEx(const std::string& utf8)
 {
