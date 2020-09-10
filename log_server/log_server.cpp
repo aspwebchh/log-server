@@ -51,7 +51,7 @@ int main(void)
         else {
             int type = stoi(paramType);
             
-            mysqlHelper::saveLog(paramContent);
+            mysqlHelper::saveLog(type, paramContent);
      
             cout << "保存到数据库成功" << endl;
             responseText = jsonResult(0, "操作成功");
@@ -80,7 +80,6 @@ int main(void)
 
     svr.Get("/debug", [](const Request& req, Response& res) {
        // mysqlHelper::debugPool();
-    
      });
 
    

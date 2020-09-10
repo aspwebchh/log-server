@@ -136,16 +136,18 @@ namespace mysqlHelper {
 
     
 
-    void saveLog(const string& content) {
+    void saveLog(const int & type, const string& content) {
         auto conn = pool::getConnection();
 
         conn->setSchema("log");
-        auto statement = conn->prepareStatement("insert into log (content,add_time) values (?,now())");
+        auto statement = conn->prepareStatement("insert into log (type,content,add_time) values (?,?,now())");
 
         auto sb = new StringBuf(content);
         auto is = new istream(sb);
 
-        statement->setBlob(1, is);
+        statement->setInt(1, type);
+
+        statement->setBlob(2, is);
         auto execResult = statement->execute();
         statement->close();
         
