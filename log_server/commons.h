@@ -3,6 +3,7 @@
 #include <string>
 #include <windows.h>
 #include <sstream>
+#include <string>
 
 
 
@@ -65,3 +66,41 @@ public:
         setg(d, d, d + buffer.size());
     }
 };
+
+
+typedef struct times
+{
+    int Year;
+    int Mon;
+    int Day;
+    int Hour;
+    int Min;
+    int Second;
+}Times;
+
+std::string time2string(Times times) {
+    using namespace std;
+    return  to_string(times.Year) + "-" + to_string(times.Mon) + "-" + to_string(times.Day) + " " + to_string(times.Hour) + ":" + to_string(times.Min) + ":" + to_string(times.Second);
+}
+
+std::string stamp2String(std::time_t tick)
+{
+    struct std::tm tm;
+    char s[100];
+    Times standard;
+
+    //tick = time(NULL);
+    tm = *localtime(&tick);
+    strftime(s, sizeof(s), "%Y-%m-%d %H:%M:%S", &tm);
+
+
+    standard.Year = atoi(s);
+    standard.Mon = atoi(s + 5);
+    standard.Day = atoi(s + 8);
+    standard.Hour = atoi(s + 11);
+    standard.Min = atoi(s + 14);
+    standard.Second = atoi(s + 17);
+
+    return time2string( standard );
+}
+

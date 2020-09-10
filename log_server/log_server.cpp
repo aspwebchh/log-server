@@ -61,6 +61,28 @@ int main(void)
         res.set_content(GBToUTF8Ex(responseText), "text/json");
     });
 
+    svr.Get("/mysql_pool_info", [](const Request& req, Response& res) {
+        auto poolInfo = mysqlHelper::mysqlPoolInfo();
+        StringBuffer buffer;
+        Writer<StringBuffer> writer(buffer);
+        writer.StartArray();
+        for (auto& item : poolInfo) {
+            writer.StartObject();
+            writer.Key("use");
+            writer.Bool(item.first);
+            writer.Key("lastUseTime");
+            writer.String(stamp2String(item.second).c_str());
+            writer.EndObject();
+        }
+        writer.EndArray();
+        res.set_content(buffer.GetString(), "text/json");
+    });
+
+    svr.Get("/debug", [](const Request& req, Response& res) {
+       // mysqlHelper::debugPool();
+    
+     });
+
    
     svr.listen("localhost", 10010);
 }
