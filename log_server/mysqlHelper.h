@@ -23,7 +23,7 @@ namespace mysqlHelper {
         vector<PoolItem> pool;
 
         const int MAX_POOL_SIZE = 10;
-        const int MIN_POOL_SIZE = 2;
+        const int MIN_POOL_SIZE = 1;
 
         const int IDLE_SECOND = 30;
 
@@ -134,27 +134,55 @@ namespace mysqlHelper {
         }
     }
 
+
+    class SaveLog {
+    private:
+        sql::Connection* conn ;
+        sql::PreparedStatement* statement;
+        StringBuf* sb;
+        istream* is;
+
+    public:
+        void save(const std::string & content, const int &type) {
+            conn = pool::getConnection();
+
+            conn->setSchema("log");
+            statement = conn->prepareStatement("insert into log (type,content,add_time) values (?,?,now())");
+
+            sb = new StringBuf(content);
+            is = new istream(sb);
+
+            statement->setInt(1, type);
+
+            statement->setBlob(2, is);
+            auto execResult = statement->execute();
+        }
+
+        ~SaveLog() {
+            if (statement != NULL) {
+                statement->close();
+            }
+            if (conn != NULL) {
+                pool::returnConnection(conn);
+            }
+            if (is != NULL) {
+                delete is;
+            }
+            if (sb != NULL) {
+                delete sb;
+            }
+        }
+    };
     
 
     void saveLog(const int & type, const string& content) {
-        auto conn = pool::getConnection();
-
-        conn->setSchema("log");
-        auto statement = conn->prepareStatement("insert into log (type,content,add_time) values (?,?,now())");
-
-        auto sb = new StringBuf(content);
-        auto is = new istream(sb);
-
-        statement->setInt(1, type);
-
-        statement->setBlob(2, is);
-        auto execResult = statement->execute();
-        statement->close();
-        
-        pool::returnConnection(conn);
-
-        delete is;
-        delete sb;
+        SaveLog sv;
+        try {
+            sv.save(content, type);
+        }
+        catch (...) {
+            
+        }
     }
 
     void debugPool() {
