@@ -17,6 +17,8 @@
 #include <cppconn/prepared_statement.h>
 #include <string>
 #include "mysqlHelper.h"
+#include "ThreadPool.h"
+#include "configMgr.h"
 
 using namespace httplib;
 using namespace std;
@@ -38,8 +40,10 @@ std::string jsonResult(const int & code, const std::string & msg) {
 int main(void)
 {
     Server svr;
+    
+    threadPool::ThreadPool threadPool(10);
 
-    svr.Get("/log", [](const Request& req, Response& res) {
+    svr.Get("/log", [&threadPool](const Request& req, Response& res) {
         auto paramType = req.has_param("type") ? req.get_param_value("type") : "";
         auto paramContent = req.has_param("content") ? req.get_param_value("content") : "";
         string responseText;
@@ -51,7 +55,10 @@ int main(void)
         else {
             int type = stoi(paramType);
             
-            mysqlHelper::saveLog(type, paramContent);
+            threadPool.execute([type, paramContent](){
+                mysqlHelper::saveLog(type, paramContent);
+            });
+            
      
             cout << "保存到数据库成功" << endl;
             responseText = jsonResult(0, "操作成功");
@@ -59,6 +66,17 @@ int main(void)
 
        
         res.set_content(GBToUTF8Ex(responseText), "text/json");
+    });
+
+    svr.Get("/thread_pool_info", [&threadPool](const Request& req, Response& res) {
+        int taskCount = threadPool.taskCount();
+        StringBuffer buffer;
+        Writer<StringBuffer> writer(buffer);
+        writer.StartObject();
+        writer.Key("taskCount");
+        writer.Int(taskCount);
+        writer.EndObject();
+        res.set_content(buffer.GetString(), "text/json");
     });
 
     svr.Get("/mysql_pool_info", [](const Request& req, Response& res) {
@@ -82,6 +100,6 @@ int main(void)
        // mysqlHelper::debugPool();
      });
 
-   
-    svr.listen("localhost", 10010);
+    auto config = configMgr::instance();
+    svr.listen("localhost", config->port);
 }

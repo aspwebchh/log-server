@@ -157,9 +157,12 @@
     <ClCompile Include="log_server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlockingQueue.h" />
     <ClInclude Include="commons.h" />
+    <ClInclude Include="configMgr.h" />
     <ClInclude Include="httplib.h" />
     <ClInclude Include="mysqlHelper.h" />
+    <ClInclude Include="ThreadPool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

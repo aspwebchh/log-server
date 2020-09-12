@@ -29,5 +29,14 @@
     <ClInclude Include="mysqlHelper.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="BlockingQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="configMgr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
