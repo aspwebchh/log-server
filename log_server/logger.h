@@ -66,7 +66,8 @@ namespace logger {
 
 	private:
 		shared_ptr<string> getMessage(const string& msg) {
-			string nowString = *getNow();
+			auto nowPtr = getNow();
+			string & nowString = *nowPtr;
 			auto finalMsg = "[" + nowString + "]" + msg;
 			return make_shared<string>(finalMsg);
 		}
