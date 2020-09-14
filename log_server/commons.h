@@ -78,13 +78,10 @@ typedef struct times
     int Second;
 }Times;
 
-std::string time2string(Times times) {
-    using namespace std;
-    return  to_string(times.Year) + "-" + to_string(times.Mon) + "-" + to_string(times.Day) + " " + to_string(times.Hour) + ":" + to_string(times.Min) + ":" + to_string(times.Second);
-}
-
 std::string stamp2String(std::time_t tick)
 {
+    using namespace std;
+
     struct std::tm tm;
     char s[100];
     Times standard;
@@ -101,6 +98,7 @@ std::string stamp2String(std::time_t tick)
     standard.Min = atoi(s + 14);
     standard.Second = atoi(s + 17);
 
-    return time2string( standard );
+    return to_string(standard.Year) + "-" + to_string(standard.Mon) + "-" + to_string(standard.Day)
+        + " " + to_string(standard.Hour) + ":" + to_string(standard.Min) + ":" + to_string(standard.Second);
 }
 

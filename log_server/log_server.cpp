@@ -1,4 +1,5 @@
 ﻿#include "httplib.h"
+#include "logger.h"
 #include <string>
 #include <windows.h>
 #include <sstream>
@@ -7,7 +8,6 @@
 #include "writer.h"
 #include "stringbuffer.h"
 #include "winsock.h"
-#include "mysql.h"
 #include <mysql_connection.h>
 #include <mysql_driver.h>
 #include <cppconn/driver.h>
@@ -19,6 +19,8 @@
 #include "mysqlHelper.h"
 #include "ThreadPool.h"
 #include "configMgr.h"
+
+
 
 using namespace httplib;
 using namespace std;
@@ -59,8 +61,7 @@ int main(void)
                 mysqlHelper::saveLog(type, paramContent);
             });
             
-     
-            cout << "保存到数据库成功" << endl;
+            logger::getLogger().info("保存到数据库成功");
             responseText = jsonResult(0, "操作成功");
         }
 
@@ -98,7 +99,7 @@ int main(void)
 
     svr.Get("/debug", [](const Request& req, Response& res) {
        // mysqlHelper::debugPool();
-     });
+     });;
 
     auto config = configMgr::instance();
     svr.listen("localhost", config->port);
