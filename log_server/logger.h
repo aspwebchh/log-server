@@ -74,8 +74,7 @@ namespace logger {
 
 		shared_ptr<string> getNow() {
 			auto timestamp = std::time(0);
-			string str = stamp2String(timestamp);
-			return make_shared<string>(str);
+			return stampToString(timestamp);
 		}
 	};
 

@@ -90,7 +90,7 @@ int main(void)
             writer.Key("use");
             writer.Bool(item.first);
             writer.Key("lastUseTime");
-            writer.String(stamp2String(item.second).c_str());
+            writer.String(stampToString(item.second)->c_str());
             writer.EndObject();
         }
         writer.EndArray();

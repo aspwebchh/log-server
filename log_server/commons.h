@@ -4,8 +4,9 @@
 #include <windows.h>
 #include <sstream>
 #include <string>
+#include <memory>
 
-
+using namespace std;
 
 std::string UTF8ToGBEx(const std::string& utf8)
 {
@@ -78,15 +79,11 @@ typedef struct times
     int Second;
 }Times;
 
-std::string stamp2String(std::time_t tick)
-{
-    using namespace std;
-
+shared_ptr<string> stampToString(time_t tick) {
     struct std::tm tm;
     char s[100];
     Times standard;
 
-    //tick = time(NULL);
     tm = *localtime(&tick);
     strftime(s, sizeof(s), "%Y-%m-%d %H:%M:%S", &tm);
 
@@ -98,7 +95,19 @@ std::string stamp2String(std::time_t tick)
     standard.Min = atoi(s + 14);
     standard.Second = atoi(s + 17);
 
-    return to_string(standard.Year) + "-" + to_string(standard.Mon) + "-" + to_string(standard.Day)
-        + " " + to_string(standard.Hour) + ":" + to_string(standard.Min) + ":" + to_string(standard.Second);
-}
+    shared_ptr<string> result = make_shared<string>();
+    result->append(to_string(standard.Year));
+    result->append("-");
+    result->append(to_string(standard.Mon));
+    result->append("-");
+    result->append(to_string(standard.Day));
+    result->append(" ");
+    result->append(to_string(standard.Hour));
+    result->append(":");
+    result->append(to_string(standard.Min));
+    result->append(":");
+    result->append(to_string(standard.Second));
+
+    return result;
+};
 
