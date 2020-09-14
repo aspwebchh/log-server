@@ -17,7 +17,7 @@ namespace threadPool {
 	public:
 		ThreadPool(int theads);
 		void execute(function<void(void)> fn);
-		int taskCount();
+		size_t taskCount();
 	};
 
 
@@ -36,7 +36,7 @@ namespace threadPool {
 		taskList.Put(task);
 	}
 
-	int ThreadPool::taskCount() {
+	size_t ThreadPool::taskCount() {
 		return taskList.Size();
 	}
 }

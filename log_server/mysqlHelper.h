@@ -35,7 +35,7 @@ namespace mysqlHelper {
         sql::mysql::MySQL_Driver* driver = sql::mysql::get_driver_instance();;
 
         sql::Connection* createConnection() {
-            sql::Connection* conn = driver->connect("localhost", "root", "123456");;
+            sql::Connection* conn = driver->connect("localhost", "root", "123456");
             return conn;
         }
 
@@ -128,6 +128,7 @@ namespace mysqlHelper {
                 if (item.conn == conn) {
                     item.use = false;
                     condition.notify_one();
+
                     break;
                 }
             }
@@ -138,38 +139,29 @@ namespace mysqlHelper {
     class SaveLog {
     private:
         sql::Connection* conn ;
-        sql::PreparedStatement* statement;
-        StringBuf* sb;
-        istream* is;
 
     public:
         void save(const std::string & content, const int &type) {
             conn = pool::getConnection();
 
             conn->setSchema("log");
-            statement = conn->prepareStatement("insert into log (type,content,add_time) values (?,?,now())");
+            auto ptr = conn->prepareStatement("insert into log (type,content,add_time) values (?,?,now())");
+            shared_ptr<sql::PreparedStatement> statement(ptr, [](sql::PreparedStatement * ptr) {
+                ptr->close();
+            });
 
-            sb = new StringBuf(content);
-            is = new istream(sb);
+            auto sb = make_shared<StringBuf>(content);
+            auto is = make_shared<istream>(sb.get());
 
             statement->setInt(1, type);
 
-            statement->setBlob(2, is);
+            statement->setBlob(2, is.get());
             auto execResult = statement->execute();
         }
 
         ~SaveLog() {
-            if (statement != NULL) {
-                statement->close();
-            }
             if (conn != NULL) {
                 pool::returnConnection(conn);
-            }
-            if (is != NULL) {
-                delete is;
-            }
-            if (sb != NULL) {
-                delete sb;
             }
         }
     };

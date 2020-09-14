@@ -19,7 +19,7 @@ namespace configMgr {
 	} ;
 
 
-	string readText(const string& filePath) {
+	shared_ptr<string> readText(const string& filePath) {
 		ifstream infile;
 		infile.open(filePath.data());   //将文件流对象与文件连接起来 
 
@@ -30,22 +30,21 @@ namespace configMgr {
 			result += s + "\n";
 		}
 		infile.close();
-		return result;
+		return make_shared<string>(result);
 	}
 
 
-	Config* config;
+	shared_ptr<Config> config;
 
-	Config* instance() {
+	shared_ptr<Config> instance() {
 		if (config == nullptr) {
 			auto configText = readText("config.json");
 			Document doc;
-			doc.Parse(configText.c_str());
+			doc.Parse(configText->c_str());
 			int port = doc["port"].GetInt();
 
-			Config* cfg = new Config;
-			cfg->port = port;
-			config = cfg;
+			config = make_shared<Config>();
+			config->port = port;
 			return config;
 		}
 		else {

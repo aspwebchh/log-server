@@ -69,12 +69,12 @@ int main(void)
     });
 
     svr.Get("/thread_pool_info", [&threadPool](const Request& req, Response& res) {
-        int taskCount = threadPool.taskCount();
+        auto taskCount = threadPool.taskCount();
         StringBuffer buffer;
         Writer<StringBuffer> writer(buffer);
         writer.StartObject();
         writer.Key("taskCount");
-        writer.Int(taskCount);
+        writer.Int64(taskCount);
         writer.EndObject();
         res.set_content(buffer.GetString(), "text/json");
     });
