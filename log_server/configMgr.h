@@ -8,18 +8,28 @@
 #include "writer.h"
 #include "stringbuffer.h"
 #include <iostream>
-
+#include <mysql_connection.h>
 
 using namespace std;
 using namespace rapidjson;
 
 namespace configMgr {
+	
+	sql::SQLString mysql_host_dev("localhost");
+	sql::SQLString mysql_user_dev("root");
+	sql::SQLString mysql_password_dev("123456");
+
+	sql::SQLString mysql_host_test("localhost");
+	sql::SQLString mysql_user_test("root");
+	sql::SQLString mysql_password_test("123456");
+
+
 	struct Config {
 		int port;
-	} ;
+		string env;
+	};
 
-
-	shared_ptr<string> readText(const string& filePath) {
+	string readText(const string& filePath) {
 		ifstream infile;
 		infile.open(filePath.data());   //将文件流对象与文件连接起来 
 
@@ -30,25 +40,24 @@ namespace configMgr {
 			result += s + "\n";
 		}
 		infile.close();
-		return make_shared<string>(result);
+		return result;
 	}
 
+	Config config;
 
-	shared_ptr<Config> config;
+	void init() {
+		auto configText = readText("config.json");
+		Document doc;
+		doc.Parse(configText.c_str());
 
-	shared_ptr<Config> instance() {
-		if (config == nullptr) {
-			auto configText = readText("config.json");
-			Document doc;
-			doc.Parse(configText->c_str());
-			int port = doc["port"].GetInt();
+		config.port = doc["port"].GetInt();
+		config.env = doc["env"].GetString();
+	}
 
-			config = make_shared<Config>();
-			config->port = port;
-			return config;
+	Config instance() {
+		if (config.port == 0) {
+			init();
 		}
-		else {
-			return config;
-		}
+		return config;
 	}
 }

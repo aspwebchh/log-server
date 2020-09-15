@@ -8,13 +8,6 @@
 #include "writer.h"
 #include "stringbuffer.h"
 #include "winsock.h"
-#include <mysql_connection.h>
-#include <mysql_driver.h>
-#include <cppconn/driver.h>
-#include <cppconn/exception.h>
-#include <cppconn/resultset.h>
-#include <cppconn/statement.h>
-#include <cppconn/prepared_statement.h>
 #include <string>
 #include "mysqlHelper.h"
 #include "ThreadPool.h"
@@ -99,8 +92,9 @@ int main(void)
 
     svr.Get("/debug", [](const Request& req, Response& res) {
        // mysqlHelper::debugPool();
-     });;
+     });
 
     auto config = configMgr::instance();
-    svr.listen("localhost", config->port);
+
+    svr.listen("localhost", config.port);
 }

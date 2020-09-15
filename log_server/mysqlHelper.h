@@ -9,6 +9,7 @@
 #include <string>
 #include <mutex>
 #include "commons.h"
+#include "configMgr.h"
 
 using namespace std;
 
@@ -32,10 +33,22 @@ namespace mysqlHelper {
         std::mutex mutex;
         std::condition_variable condition;
 
-        sql::mysql::MySQL_Driver* driver = sql::mysql::get_driver_instance();;
+        sql::mysql::MySQL_Driver* driver = sql::mysql::get_driver_instance();
 
         sql::Connection* createConnection() {
-            sql::Connection* conn = driver->connect("localhost", "root", "123456");
+            sql::Connection* conn = nullptr;
+            string env = configMgr::instance().env;
+            if (env == "dev") {
+                conn = driver->connect(configMgr::mysql_host_dev, configMgr::mysql_user_dev, configMgr::mysql_password_dev);
+            }
+            else if( env == "test" ) {
+                conn = driver->connect(configMgr::mysql_host_test, configMgr::mysql_user_test, configMgr::mysql_password_test);
+            }
+            else {
+                string msg = "»·¾³ÅäÖÃ´íÎó,env=" + env;
+                logger::getLogger().error(msg);
+                throw std::invalid_argument(msg);
+            }
             return conn;
         }
 
@@ -87,6 +100,7 @@ namespace mysqlHelper {
                 auto diff = now - lastUseTime;
                 if (!item.use && diff >= IDLE_SECOND && pool.size() > MIN_POOL_SIZE) {
                     item.conn->close();
+                    delete item.conn;
                     it = pool.erase(it);
                 }
                 else {
@@ -148,6 +162,7 @@ namespace mysqlHelper {
             auto ptr = conn->prepareStatement("insert into log (type,content,add_time) values (?,?,now())");
             shared_ptr<sql::PreparedStatement> statement(ptr, [](sql::PreparedStatement * ptr) {
                 ptr->close();
+                delete ptr;
             });
 
             auto sb = make_shared<StringBuf>(content);
@@ -174,9 +189,19 @@ namespace mysqlHelper {
         try {
             sv.save(content, type);
         }
-        catch (...) {
-            
+        catch (sql::SQLException e) {
+            const string what = e.what();
+            logger::getLogger().error(what);
         }
+        catch (sql::InvalidArgumentException e) {
+            const string what = e.what();
+            logger::getLogger().error(what);
+        }
+        catch (std::bad_alloc e) {
+            const string what = e.what();
+            logger::getLogger().error(what);
+        }
+        catch (...) {}
     }
 
     void debugPool() {

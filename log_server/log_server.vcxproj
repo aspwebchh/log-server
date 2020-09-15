@@ -77,14 +77,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>G:\cpp\log_server2\include\rapidjson;C:\Program Files\MySQL\Connector C++ 8.0\include\jdbc;F:\fdm_download\boost_1_74_0;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\MySQL\Connector C++ 8.0\lib64\vs14;F:\fdm_download\boost_1_74_0\stage\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>G:\cpp\log_server2\include\rapidjson;G:\chrome_download\mysql-connector-c++-8.0.21-winx64\include\jdbc;F:\fdm_download\boost_1_74_0;$(IncludePath)</IncludePath>
+    <LibraryPath>G:\chrome_download\mysql-connector-c++-8.0.21-winx64\lib64\vs14;F:\fdm_download\boost_1_74_0\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>F:\fdm_download\boost_1_74_0;G:\chrome_download\mysql-connector-c++-8.0.21-winx64\include\jdbc;G:\cpp\log_server2\include\rapidjson;$(IncludePath)</IncludePath>
+    <LibraryPath>G:\chrome_download\mysql-connector-c++-8.0.21-winx64\lib64\vs14;F:\fdm_download\boost_1_74_0\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -109,6 +111,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,12 +148,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>mysqlcppconn.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
