@@ -72,21 +72,21 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files\MySQL\MySQL Server 8.0\include;G:\cpp\log_server\include\rapidjson;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\MySQL\MySQL Server 8.0\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>G:\chrome_download\mysql-connector-c++-8.0.21-winx64\include\jdbc;G:\cpp\log_server2\include\rapidjson;F:\fdm_download\boost_1_74_0;G:\cpp\libs\libevent\include;$(IncludePath)</IncludePath>
+    <LibraryPath>G:\chrome_download\mysql-connector-c++-8.0.21-winx64\lib64\vs14;F:\fdm_download\boost_1_74_0\stage\lib;G:\cpp\libs\libevent\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>G:\cpp\log_server2\include\rapidjson;G:\chrome_download\mysql-connector-c++-8.0.21-winx64\include\jdbc;F:\fdm_download\boost_1_74_0;$(IncludePath)</IncludePath>
-    <LibraryPath>G:\chrome_download\mysql-connector-c++-8.0.21-winx64\lib64\vs14;F:\fdm_download\boost_1_74_0\stage\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>G:\cpp\log_server2\include\rapidjson;G:\chrome_download\mysql-connector-c++-8.0.21-winx64\include\jdbc;F:\fdm_download\boost_1_74_0;G:\cpp\libs\libevent\include;$(IncludePath)</IncludePath>
+    <LibraryPath>G:\chrome_download\mysql-connector-c++-8.0.21-winx64\lib64\vs14;F:\fdm_download\boost_1_74_0\stage\lib;G:\cpp\libs\libevent\lib64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>F:\fdm_download\boost_1_74_0;G:\chrome_download\mysql-connector-c++-8.0.21-winx64\include\jdbc;G:\cpp\log_server2\include\rapidjson;$(IncludePath)</IncludePath>
-    <LibraryPath>G:\chrome_download\mysql-connector-c++-8.0.21-winx64\lib64\vs14;F:\fdm_download\boost_1_74_0\stage\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>F:\fdm_download\boost_1_74_0;G:\chrome_download\mysql-connector-c++-8.0.21-winx64\include\jdbc;G:\cpp\log_server2\include\rapidjson;G:\cpp\libs\libevent\include;$(IncludePath)</IncludePath>
+    <LibraryPath>G:\chrome_download\mysql-connector-c++-8.0.21-winx64\lib64\vs14;F:\fdm_download\boost_1_74_0\stage\lib;G:\cpp\libs\libevent\lib64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -100,7 +100,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;wsock32.lib;libevent_core.lib;libevent.lib;libevent_extras.lib;mysqlcppconn.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -116,7 +116,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>mysqlcppconn.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;wsock32.lib;libevent_core.lib;libevent.lib;libevent_extras.lib;mysqlcppconn.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -155,7 +155,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>mysqlcppconn.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;wsock32.lib;libevent_core.lib;libevent.lib;libevent_extras.lib;mysqlcppconn.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -165,7 +165,9 @@
     <ClInclude Include="BlockingQueue.h" />
     <ClInclude Include="commons.h" />
     <ClInclude Include="configMgr.h" />
+    <ClInclude Include="data.h" />
     <ClInclude Include="httplib.h" />
+    <ClInclude Include="httpServer.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="mysqlHelper.h" />
     <ClInclude Include="ThreadPool.h" />

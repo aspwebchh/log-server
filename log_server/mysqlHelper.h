@@ -10,8 +10,10 @@
 #include <mutex>
 #include "commons.h"
 #include "configMgr.h"
+#include <functional>
 
 using namespace std;
+using namespace data;
 
 namespace mysqlHelper {
     namespace pool {
@@ -155,22 +157,28 @@ namespace mysqlHelper {
         sql::Connection* conn ;
 
     public:
-        void save(const std::string & content, const int &type) {
+        void save(const logItem * logItem) {
             conn = pool::getConnection();
 
             conn->setSchema("log");
-            auto ptr = conn->prepareStatement("insert into log (type,content,add_time) values (?,?,now())");
+            auto ptr = conn->prepareStatement("insert into log (type,content,add_time,level,server,stack_trace) values (?,?,?,?,?,?)");
             shared_ptr<sql::PreparedStatement> statement(ptr, [](sql::PreparedStatement * ptr) {
                 ptr->close();
                 delete ptr;
             });
 
-            auto sb = make_shared<StringBuf>(content);
+            auto sb = make_shared<StringBuf>(logItem->content);
             auto is = make_shared<istream>(sb.get());
 
-            statement->setInt(1, type);
+            statement->setInt(1, logItem->productId);
 
             statement->setBlob(2, is.get());
+            statement->setString(3, logItem->logTime);
+            statement->setString(4, logItem->level);
+            statement->setString(5, logItem->server);
+            statement->setString(6, logItem->stackTrace);
+
+
             auto execResult = statement->execute();
         }
 
@@ -184,10 +192,10 @@ namespace mysqlHelper {
 
 
 
-    void saveLog(const int & type, const string& content) {
+    void saveLog(const logItem * logItem) {
         SaveLog sv;
         try {
-            sv.save(content, type);
+            sv.save(logItem);
         }
         catch (sql::SQLException e) {
             const string what = e.what();
@@ -201,19 +209,22 @@ namespace mysqlHelper {
             const string what = e.what();
             logger::getLogger().error(what);
         }
-        catch (...) {}
+        catch (std::exception e) {
+            const string what = e.what();
+            logger::getLogger().error(what);
+        }
+        catch (...) {
+            logger::getLogger().error("δ֪�쳣");
+        }
     }
 
     void debugPool() {
         
     }
 
-    vector<pair<bool,time_t>> mysqlPoolInfo() {
-        vector<pair<bool, time_t>> result;
+    void mysqlPoolInfo(function<void(bool,time_t)> onItem) {
         for (auto& item : pool::pool) {
-            auto resultItem = make_pair(item.use, item.lastUseTime);
-            result.push_back(resultItem);
+            onItem(item.use, item.lastUseTime);
         }
-        return result;
     }
 }
