@@ -14,19 +14,13 @@ using namespace std;
 using namespace rapidjson;
 
 namespace configMgr {
-	
-	sql::SQLString mysql_host_dev("localhost");
-	sql::SQLString mysql_user_dev("root");
-	sql::SQLString mysql_password_dev("123456");
-
-	sql::SQLString mysql_host_test("localhost");
-	sql::SQLString mysql_user_test("root");
-	sql::SQLString mysql_password_test("123456");
-
 
 	struct Config {
 		int port;
 		string env;
+		string mySqlHost;
+		string mysqlUser;
+		string mysqlPassword;
 	};
 
 	string readText(const string& filePath) {
@@ -51,10 +45,12 @@ namespace configMgr {
 		doc.Parse(configText.c_str());
 
 		config.port = doc["port"].GetInt();
-		config.env = doc["env"].GetString();
+		config.mySqlHost = doc["mysql_host"].GetString();
+		config.mysqlUser = doc["mysql_user"].GetString();
+		config.mysqlPassword = doc["mysql_password"].GetString();
 	}
 
-	Config instance() {
+	Config& instance() {
 		if (config.port == 0) {
 			init();
 		}

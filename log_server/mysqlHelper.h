@@ -38,19 +38,8 @@ namespace mysqlHelper {
         sql::mysql::MySQL_Driver* driver = sql::mysql::get_driver_instance();
 
         sql::Connection* createConnection() {
-            sql::Connection* conn = nullptr;
-            string env = configMgr::instance().env;
-            if (env == "dev") {
-                conn = driver->connect(configMgr::mysql_host_dev, configMgr::mysql_user_dev, configMgr::mysql_password_dev);
-            }
-            else if( env == "test" ) {
-                conn = driver->connect(configMgr::mysql_host_test, configMgr::mysql_user_test, configMgr::mysql_password_test);
-            }
-            else {
-                string msg = "»·¾³ÅäÖÃ´íÎó,env=" + env;
-                logger::getLogger().error(msg);
-                throw std::invalid_argument(msg);
-            }
+            auto config = configMgr::instance();
+            sql::Connection* conn = driver->connect(config.mySqlHost, config.mysqlUser, config.mysqlPassword);
             return conn;
         }
 

@@ -1,4 +1,6 @@
 {
 	"port":10012,
-	"env":"dev"
+	"mysql_host":"localhost:3306",
+	"mysql_user":"root",
+	"mysql_password":"123456"
 }
