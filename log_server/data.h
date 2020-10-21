@@ -6,6 +6,7 @@ using namespace std;
 
 //const string& content, const string& level, const string& logTime, const string& staceTrace, const string& server
 
+//²âÊÔ×¢ÊÍ
 namespace data {
 	struct logItem {
 		int productId;
